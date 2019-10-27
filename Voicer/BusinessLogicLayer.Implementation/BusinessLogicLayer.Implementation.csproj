@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <RootNamespace>BusinessLogicLayer.Implementation</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Services" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DataAccessLayer.Abstraction\DataAccessLayer.Abstraction.csproj" />
+      <ProjectReference Include="..\DataAccessLayer.Domain\DataAccessLayer.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
