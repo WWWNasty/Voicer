@@ -17,6 +17,8 @@ namespace DataAccessLayer.Models.Entities
 
         public ICollection<UserVoting> Participants { get; set; }
 
+        public ICollection<Vote> Votes { get; set; }
+
         public Chat Chat { get; set; }
 
     }

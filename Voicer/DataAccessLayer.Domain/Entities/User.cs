@@ -13,5 +13,7 @@ namespace DataAccessLayer.Models.Entities
         public ICollection<Voting> CreatedVoting { get; set; }
         
         public ICollection<UserVoting> UserVoting { get; set; }
+
+        public ICollection<Vote> Votes { get; set; }
     }
 }
