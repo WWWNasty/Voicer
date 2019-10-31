@@ -8,7 +8,7 @@ namespace DataAccessLayer.Models.Entities
 
         public ICollection<Message> Message { get; set; }
 
-        public Voting Voting { get; set; }
+        //public Voting Voting { get; set; }
 
     }
 }

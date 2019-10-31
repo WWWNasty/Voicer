@@ -15,11 +15,11 @@ namespace DataAccessLayer.Models.Entities
 
         public ICollection<VotingOption> VotingOption { get; set; }
 
-        public ICollection<UserVoting> Participants { get; set; }
+        //public ICollection<UserVoting> Participants { get; set; }
 
         public ICollection<Vote> Votes { get; set; }
 
-        public Chat Chat { get; set; }
+        //public Chat Chat { get; set; }
 
     }
 }
