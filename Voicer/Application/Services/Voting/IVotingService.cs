@@ -5,6 +5,6 @@ namespace BusinessLogicLayer.Abstraction.Services.ListVoting
 {
     public interface IVotingService
     {
-        IEnumerable<VotingDto> GetVoting();
+        ICollection<VotingDto> GetVoting();
     }
 }

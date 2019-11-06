@@ -15,17 +15,16 @@ namespace BusinessLogicLayer.Abstraction.Services.ListVoting
             _repository = repository;
         }
 
-        public IEnumerable<VotingDto> GetVoting()
-        {
-            return _repository.GetVoting()
+        public ICollection<VotingDto> GetVoting() =>
+            _repository.GetVoting()
                 .Select(voting => new VotingDto
-            {
-                Name = voting.Name,
-                Description = voting.Description,
-                StartDate = voting.StartDate,
-                EndDate = voting.EndDate
-            });
-            
-        }
+                {
+                    Name = voting.Name,
+                    Description = voting.Description,
+                    StartDate = voting.StartDate,
+                    EndDate = voting.EndDate
+                }).ToList();
+
+        
     }
 }
