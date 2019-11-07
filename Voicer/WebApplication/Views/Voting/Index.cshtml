@@ -1,0 +1,30 @@
+﻿@using BusinessLogicLayer.Abstraction.Services.ListVoting
+@model IEnumerable<BusinessLogicLayer.Abstraction.Services.ListVoting.VotingDto>;
+@{
+    ViewData["Title"] = "Voting Page";
+}
+<h1>List voting</h1>
+
+<table class="table table-inverse">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>StartDate</th>
+      <th>EndDate</th>
+    </tr>
+  </thead>
+  <tbody>
+  @foreach (var voting in Model)
+  {
+      <tr>
+          <th scope="row">1</th>
+          <td>@voting.Name</td>
+          <td>@voting.Description</td>
+          <td>@voting.StartDate</td>
+          <td>@voting.EndDate</td>
+      </tr>
+  }
+  </tbody>
+</table>
