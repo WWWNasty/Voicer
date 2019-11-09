@@ -1,6 +1,6 @@
 using System;
 
-namespace BusinessLogicLayer.Abstraction.Services.ListVoting
+namespace BusinessLogicLayer.Abstraction.Services.Voting
 {
     public class VotingDto
     {

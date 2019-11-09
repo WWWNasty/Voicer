@@ -1,30 +1,17 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using BusinessLogicLayer.Abstraction.Repositories;
-using DataAccessLayer.Models.Entities;
 
-namespace BusinessLogicLayer.Abstraction.Services.ListVoting
+namespace BusinessLogicLayer.Abstraction.Services.Voting
 {
     public class VotingService: IVotingService
     {
-        private readonly IVotingRepository _repository;
-
-        public VotingService(IVotingRepository repository)
+        private readonly IUnitOfWork _unitOfWork;
+        
+        public VotingService(IUnitOfWork unitOfWork)
         {
-            _repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
-        public ICollection<VotingDto> GetVoting() =>
-            _repository.GetVoting()
-                .Select(voting => new VotingDto
-                {
-                    Name = voting.Name,
-                    Description = voting.Description,
-                    StartDate = voting.StartDate,
-                    EndDate = voting.EndDate
-                }).ToList();
-
-        
+        public ICollection<VotingDto> GetVoting() => _unitOfWork.VotingRepository.GetVoting();
     }
 }
