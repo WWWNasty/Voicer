@@ -81,6 +81,30 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserVoting",
+                columns: table => new
+                {
+                    VotingId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserVoting", x => new { x.VotingId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_UserVoting_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserVoting_Voting_VotingId",
+                        column: x => x.VotingId,
+                        principalTable: "Voting",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "VotingOption",
                 columns: table => new
                 {
@@ -133,20 +157,15 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Voting",
-                columns: new[] { "Id", "Description", "EndDate", "Name", "StartDate", "UserId" },
-                values: new object[] { -1, "every year...", new DateTime(2019, 11, 12, 19, 55, 57, 212, DateTimeKind.Utc).AddTicks(7580), "Where will be the new year's corporate party", new DateTime(2019, 10, 31, 19, 55, 57, 212, DateTimeKind.Utc).AddTicks(7020), null });
-
-            migrationBuilder.InsertData(
-                table: "Voting",
-                columns: new[] { "Id", "Description", "EndDate", "Name", "StartDate", "UserId" },
-                values: new object[] { -2, "Petia or Zelia", new DateTime(2019, 11, 12, 19, 55, 57, 212, DateTimeKind.Utc).AddTicks(8360), "Elections of the President of Ukraine", new DateTime(2019, 10, 31, 19, 55, 57, 212, DateTimeKind.Utc).AddTicks(8350), null });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_ChatId",
                 table: "Messages",
                 column: "ChatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserVoting_UserId",
+                table: "UserVoting",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Votes_UserId",
@@ -178,6 +197,9 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Messages");
+
+            migrationBuilder.DropTable(
+                name: "UserVoting");
 
             migrationBuilder.DropTable(
                 name: "Votes");

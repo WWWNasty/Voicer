@@ -3,13 +3,12 @@ using System.Threading.Tasks;
 using BusinessLogicLayer.Abstraction.Repositories.Base;
 using DataAccessLayer.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using VotingApp.Infrastructure.DataAccess;
 
 namespace Infrastructure.EntityFramework.Repositories.Base
 {
     public abstract class BaseRepository<TEntity, TId> : IBaseRepository<TEntity, TId> where TEntity : Entity<TId>
     {
-        private readonly VotingDbContext _context;
+        protected readonly VotingDbContext _context;
 
         protected BaseRepository(VotingDbContext context)
         {

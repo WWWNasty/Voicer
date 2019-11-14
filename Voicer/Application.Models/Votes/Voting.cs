@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using DataAccessLayer.Models.Entities;
+using DataAccessLayer.Models.Users;
 
-namespace DataAccessLayer.Models.Entities
+namespace DataAccessLayer.Models.Votes
 {
     public class Voting: Entity<int>
     {
@@ -15,7 +17,7 @@ namespace DataAccessLayer.Models.Entities
 
         public ICollection<VotingOption> VotingOption { get; set; }
 
-        //public ICollection<UserVoting> Participants { get; set; }
+        public ICollection<UserVoting> Participants { get; set; }
 
         public ICollection<Vote> Votes { get; set; }
 

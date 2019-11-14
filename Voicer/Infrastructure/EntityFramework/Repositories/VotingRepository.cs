@@ -1,13 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BusinessLogicLayer.Abstraction.Repositories;
 using BusinessLogicLayer.Abstraction.Repositories.Base;
-using BusinessLogicLayer.Abstraction.Services.Voting;
+using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos;
 using DataAccessLayer.Models.Entities;
+using DataAccessLayer.Models.Votes;
 using Infrastructure.EntityFramework.Repositories.Base;
-using VotingApp.Infrastructure.DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.EntityFramework.Repositories
 {
@@ -24,10 +26,15 @@ namespace Infrastructure.EntityFramework.Repositories
                 _mapper = mapper;
             }
             
-            public ICollection<VotingDto> GetVoting()
+            public Task<List<GetAllVotingDto>> GetAllVotingDtosAsync()
             {
-                return GetDbSet().ProjectTo<VotingDto>(_mapper.ConfigurationProvider).ToList();
-                
+                return GetDbSet().ProjectTo<GetAllVotingDto>(_mapper.ConfigurationProvider).ToListAsync();
             }
+
+            public Task<GetVotingDto> GetVotingDtoAsync(int id)
+            {
+                return GetDbSet().Where(voting => voting.Id == id).ProjectTo<GetVotingDto>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+            }
+            
     }
 }

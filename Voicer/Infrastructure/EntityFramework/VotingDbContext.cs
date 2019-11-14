@@ -1,8 +1,10 @@
 ﻿using System;
-using DataAccessLayer.Models.Entities;
+using DataAccessLayer.Models.Chats;
+using DataAccessLayer.Models.Users;
+using DataAccessLayer.Models.Votes;
 using Microsoft.EntityFrameworkCore;
 
-namespace VotingApp.Infrastructure.DataAccess
+namespace Infrastructure.EntityFramework
 { 
     public class VotingDbContext : DbContext
     {
@@ -27,19 +29,18 @@ namespace VotingApp.Infrastructure.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            
+            modelBuilder.Entity<UserVoting>()
+                .HasKey(userVoting => new { userVoting.VotingId, userVoting.UserId });
+            modelBuilder.Entity<UserVoting>()
+                .HasOne(userVoting => userVoting.Voting)
+                .WithMany(voting => voting.Participants)
+                .HasForeignKey(userVoting => userVoting.VotingId);
+            modelBuilder.Entity<UserVoting>()
+                .HasOne(userVoting => userVoting.User)
+                .WithMany(user => user.UserVoting)
+                .HasForeignKey(userVoting => userVoting.UserId);
 
-            modelBuilder.Entity<Voting>().HasData(
-                new Voting()
-                {
-                    Id = -1, Name = "Where will be the new year's corporate party", Description = "every year...", StartDate = DateTime.UtcNow,
-                    EndDate = DateTime.UtcNow.AddDays(12)
-                },
-
-                new Voting()
-                {
-                    Id = -2, Name = "Elections of the President of Ukraine", Description = "Petia or Zelia", StartDate = DateTime.UtcNow,
-                    EndDate = DateTime.UtcNow.AddDays(12)
-                });
 
         }
     }

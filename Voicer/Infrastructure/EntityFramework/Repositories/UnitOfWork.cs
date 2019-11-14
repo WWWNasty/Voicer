@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using BusinessLogicLayer.Abstraction.Repositories;
-using VotingApp.Infrastructure.DataAccess;
 
 namespace Infrastructure.EntityFramework.Repositories
 {

@@ -1,6 +1,7 @@
 using System;
+using DataAccessLayer.Models.Entities;
 
-namespace DataAccessLayer.Models.Entities
+namespace DataAccessLayer.Models.Chats
 {
     public class Message: Entity<int>
     {

@@ -69,3 +69,33 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+.btn-success{
+  background: #96E48F;
+  border-radius: 8px;
+  border-color: #96E48F;
+}
+
+.btn-outline-danger{
+   border-color: #D67575;
+    border-radius: 8px;
+    color: #D67575;
+
+}
+
+.btn-danger{
+    background: #D67575;
+    border-radius: 8px;
+    border-color: #D67575;
+}
+
+.btn-outline-secondary{
+    border: 1px solid #DCDCDC;
+    border-radius: 8px;
+    
+}
+
+.voting-options{
+    border: 1px solid #e6e6e6;
+    padding: 20px 10px 20px 10px;
+}

@@ -1,4 +1,6 @@
-namespace DataAccessLayer.Models.Entities
+using DataAccessLayer.Models.Entities;
+
+namespace DataAccessLayer.Models.Votes
 {
     public class VotingOption : Entity<int>
     {

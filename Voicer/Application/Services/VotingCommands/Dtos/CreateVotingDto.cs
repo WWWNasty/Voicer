@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 
-namespace BusinessLogicLayer.Abstraction.Services.Voting
+namespace BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos
 {
-    public class VotingDto
+    public class CreateVotingDto
     {
         public string Name { get; set; }
         
@@ -12,5 +13,7 @@ namespace BusinessLogicLayer.Abstraction.Services.Voting
         
         public DateTime EndDate { get; set; }
         
+        public ICollection<VotingOptionDto> VotingOptions { get; set; }
+
     }
 }
