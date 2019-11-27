@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BusinessLogicLayer.Abstraction.Repositories;
-using BusinessLogicLayer.Abstraction.Services.ListVoting;
+using BusinessLogicLayer.Abstraction.Services.VotingCommands;
 using DataAccessLayer.Models.Entities;
+using Infrastructure.EntityFramework;
 using Infrastructure.EntityFramework.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +15,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using VotingApp.Infrastructure.DataAccess;
 
 namespace WebApplication
 {
@@ -29,10 +30,15 @@ namespace WebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-            services.AddDbContext<VotingDbContext>(builder => builder.UseSqlite(Configuration.GetConnectionString("SQLite")));
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
+            
+            services.AddDbContext<VotingDbContext>(builder => builder
+                .UseSqlite(Configuration.GetConnectionString("SQLite")));
             services.AddScoped<IVotingRepository, VotingRepository>();
             services.AddScoped<IVotingService, VotingService>();
+            services.AddAutoMapper(typeof(VotingProfile));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

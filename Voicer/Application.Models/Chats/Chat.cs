@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using DataAccessLayer.Models.Entities;
 
-namespace DataAccessLayer.Models.Entities
+namespace DataAccessLayer.Models.Chats
 {
     public class Chat: Entity<int>
     {

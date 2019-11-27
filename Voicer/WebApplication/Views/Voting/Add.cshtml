@@ -1,0 +1,14 @@
+@model BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos.CreateVotingDto;
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h1>New voting</h1>
+<form asp-action="Add" method="post">
+    <partial name="_Voting"/>
+    <a asp-controller="Voting" asp-action="Index" class="btn btn-outline-secondary">Back</a>
+    <input type="submit"  value="Save" class="btn btn-success" />
+
+</form>

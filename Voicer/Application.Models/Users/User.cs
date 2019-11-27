@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using DataAccessLayer.Models.Entities;
+using DataAccessLayer.Models.Votes;
 
-namespace DataAccessLayer.Models.Entities
+namespace DataAccessLayer.Models.Users
 {
     public class User: Entity<int>
     {
@@ -12,7 +14,7 @@ namespace DataAccessLayer.Models.Entities
 
         public ICollection<Voting> CreatedVoting { get; set; }
         
-        //public ICollection<UserVoting> UserVoting { get; set; }
+        public ICollection<UserVoting> UserVoting { get; set; }
 
         public ICollection<Vote> Votes { get; set; }
     }
