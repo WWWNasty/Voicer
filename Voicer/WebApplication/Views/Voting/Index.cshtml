@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos.GetAllVotingDto>;
+﻿@model BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos.GetAllVotingDto;
 @{
     ViewData["Title"] = "Voting Page";
 }
@@ -19,43 +19,14 @@
       <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
     </div>
 </div>
-<table class="table table-inverse">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>StartDate</th>
-        <th>EndDate</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var voting in Model)
-    {
-        <tr>
-            <th scope="row">1</th>
-            <td>@voting.Name</td>
-            <td>@voting.Description</td>
-            <td>@voting.StartDate</td>
-            <td>@voting.EndDate</td>
-        </tr>
-    }
-    </tbody>
-</table>
+
 <div>
     
     <div class="row">
         <div class="col-sm">
             <h7>Upcoming voting</h7>
         </div>
-        <div class="col-sm">
-            <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
-                <option selected>Choose...</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
-        </div>
+        <partial name="_AllVoting" model="@Model.UpcomingVoting"/>
     </div>
     <br>
     <br>
@@ -80,20 +51,7 @@
     <h7>Active voting</h7>
     <br>
     <br>
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-sm">
-                    This is some text within a card body.
-                </div>
-                <div class="col-sm">
-                    <button type="button" class="btn btn-outline-danger">Delete</button>
-                </div>
-                            
-            </div>
-            
-        </div>
-    </div>
+    <partial name="_AllVoting" model="@Model.ActiveVoting"/>
 </div>
  <br>
 <br>
@@ -102,6 +60,8 @@
     <h7>Closed voting</h7>
     <br>
     <br>
+    
+    <partial name="_AllVoting" model="@Model.ClosedVoting"/>
     <div class="card">
         <div class="card-body">
             <div class="row">

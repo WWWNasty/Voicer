@@ -1,2 +1,10 @@
-@model object
+@using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos
+@model GetVotingDto;
+
+            @foreach (int i in Enumerable.Range(0, CreateVotingDto.VotingOptionsCount))
+            {
+                <div class="col-sm-7 mt-2">
+
+                </div>
+            }
 

@@ -5,6 +5,7 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos
 {
     public class CreateVotingDto
     {
+        public const int VotingOptionsCount = 5;
         public string Name { get; set; }
         
         public string Description { get; set; }
@@ -12,8 +13,8 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos
         public DateTime StartDate { get; set; }
         
         public DateTime EndDate { get; set; }
-        
-        public ICollection<VotingOptionDto> VotingOptions { get; set; }
+
+        public VotingOptionDto[] VotingOptions { get; set; } = new VotingOptionDto[VotingOptionsCount];
 
     }
 }

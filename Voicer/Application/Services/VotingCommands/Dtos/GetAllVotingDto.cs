@@ -1,16 +1,15 @@
 using System;
+using System.Collections.Generic;
 
 namespace BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos
 {
     public class GetAllVotingDto
     {
-        public string Name { get; set; }
+        public ICollection<VotingDto> UpcomingVoting { get; set; }
         
-        public string Description { get; set; }
+        public ICollection<VotingDto> ActiveVoting { get; set; }
         
-        public DateTime StartDate { get; set; }
-        
-        public DateTime EndDate { get; set; }
-        
+        public ICollection<VotingDto> ClosedVoting { get; set; }
+
     }
 }

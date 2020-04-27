@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using BusinessLogicLayer.Abstraction.Extensions;
 using BusinessLogicLayer.Abstraction.Repositories;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos;
+using DataAccessLayer.Models.Users;
 using DataAccessLayer.Models.Votes;
+using DataAccessLayer.Models.Votes.Enums;
 
 namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
 {
@@ -20,21 +25,51 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
             _mapper = mapper;
         }
 
-        public Task<List<GetAllVotingDto>> GetAllVotingAsync() => _unitOfWork.VotingRepository.GetAllVotingDtosAsync();
-
-        public async Task DeleteAsync(DeleteVotingDto dto)
+        public Task<UpdateVotingDto> GetVotingForUpdateAsync(int id)
         {
-            var voting = await _unitOfWork.VotingRepository.GetAsync(dto.Id);
+            return _unitOfWork.VotingRepository.GetVotingForUpdateAsync(id);
             
-            _unitOfWork.VotingRepository.Delete(voting);
+        }
 
+        public async Task<GetAllVotingDto> GetAllVotingAsync()
+        {
+            var allVoting = await _unitOfWork.VotingRepository.GetAllAsync();
+
+            return new GetAllVotingDto()
+            {
+                ActiveVoting = GetVotingWithStatus(allVoting, VotingStatus.Active),
+                UpcomingVoting = GetVotingWithStatus(allVoting, VotingStatus.Upcoming),
+                ClosedVoting = GetVotingWithStatus(allVoting, VotingStatus.Ended)
+                
+            };
+        }
+
+        private ICollection<VotingDto> GetVotingWithStatus(ICollection<Voting> allVoting, VotingStatus status)
+        {
+            return _mapper.Map<ICollection<VotingDto>>(allVoting.Where(voting => voting.GetVotingStatus() == status));
+        }
+
+        public async Task DeleteAsync(DeleteVotingDto votingDto)
+        {
+            var voting = await _unitOfWork.VotingRepository.GetAsync(votingDto.Id);
+            if (voting != null && voting.UserId == votingDto.User.GetUserId())
+            {
+                _unitOfWork.VotingRepository.Delete(voting);
+                
+            }
+            
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<int> AddAsync(CreateVotingDto dto)
+        public async Task<int> AddAsync(CreateVotingDto dto, ClaimsPrincipal user)
         {
             var voting = _mapper.Map<Voting>(dto);
 
+            voting.UserId = user.Claims
+                .Where(claim => claim.Type == ClaimTypes.NameIdentifier)
+                .Select(claim => claim.Value)
+                .First();
+                
             _unitOfWork.VotingRepository.Create(voting);
 
             await _unitOfWork.SaveChangesAsync();
@@ -42,7 +77,7 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
             return voting.Id;
         }
 
-        public async Task Update(UpdateVotingDto dto)
+        public async Task UpdateAsync(UpdateVotingDto dto)
         {
             var voting = await _unitOfWork.VotingRepository.GetAsync(dto.Id);
 
@@ -53,13 +88,24 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public Task Invite(InviteUserDto dto)
+        public async Task InviteAsync(InviteUserDto dto)
         {
-            throw new NotImplementedException();
+            //достать сущьность головонния из репозитория потом добавить в нее участников голосования пользователя который достанем из репозитория пользователей сохраним изменения
+            Voting voting = await _unitOfWork.VotingRepository.GetAsync(dto.VotingId);
+            User findUserByEmail = _unitOfWork.UserRepository.FindUserByEmail(dto.Email);
+            if (voting != null && findUserByEmail != null)
+            {
+                voting.Participants.Add(new UserVoting
+                {
+                    User = findUserByEmail,
+                    Voting = voting
+                });
+            }
+            
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public Task<GetVotingDto> GetVotingAsync(int id) => _unitOfWork.VotingRepository.GetVotingDtoAsync(id);
-        
         
         
     }

@@ -9,8 +9,10 @@ namespace BusinessLogicLayer.Abstraction.Repositories
 {
     public interface IVotingRepository: IBaseRepository<Voting, int>
     {
-        Task<List<GetAllVotingDto>> GetAllVotingDtosAsync();
+        Task<List<VotingDto>> GetAllVotingDtosAsync();
 
         Task<GetVotingDto> GetVotingDtoAsync(int id);
+
+        Task<UpdateVotingDto> GetVotingForUpdateAsync(int id);
     }
 }

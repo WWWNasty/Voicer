@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos;
 
@@ -8,14 +9,16 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
     {
         Task<GetVotingDto> GetVotingAsync(int id);
         
-        Task<List<GetAllVotingDto>> GetAllVotingAsync();
+        Task<UpdateVotingDto> GetVotingForUpdateAsync(int id);
+        
+        Task<GetAllVotingDto> GetAllVotingAsync();
+        
+        Task<int> AddAsync(CreateVotingDto dto, ClaimsPrincipal user);
+
+        Task UpdateAsync(UpdateVotingDto dto);
+
+        Task InviteAsync(InviteUserDto dto);
 
         Task DeleteAsync(DeleteVotingDto dto);
-
-        Task<int> AddAsync(CreateVotingDto dto);
-
-        Task Update(UpdateVotingDto dto);
-
-        Task Invite(InviteUserDto dto);
     }
 }

@@ -1,20 +1,24 @@
 using System;
 using System.Linq;
+using AutoMapper;
+using BusinessLogicLayer.Abstraction.Repositories;
 using BusinessLogicLayer.Abstraction.Repositories.Base;
 using DataAccessLayer.Models.Users;
 using Infrastructure.EntityFramework.Repositories.Base;
 
 namespace Infrastructure.EntityFramework.Repositories
 {
-    public class UserRepository: BaseRepository<User, int>, IUserRepository
+    public class UserRepository: BaseRepository<User, string>, IUserRepository
     {
-        public UserRepository(VotingDbContext context) : base(context)
+        
+        public UserRepository(VotingDbContext context, IMapper mapper) : base(context, mapper)
         {
         }
 
-        public User FindUser(string search)
-        {
-            throw new NotImplementedException(); // GetDbSet().FirstOrDefault(user => user.Email.ToLower().Trim());
+        public User FindUserByEmail(string email)
+        { 
+             return GetDbSet().FirstOrDefault(user => user.Email == email);
+            
         }
     }
 }

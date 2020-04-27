@@ -13,28 +13,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.EntityFramework.Repositories
 {
-    public class  VotingRepository: BaseRepository<Voting,int>, IVotingRepository
+    public class VotingRepository : BaseRepository<Voting, int>, IVotingRepository
 
     {
-        private readonly VotingDbContext _dbContext;
+        public VotingRepository(VotingDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+        {
+        }
+
+        public Task<List<VotingDto>> GetAllVotingDtosAsync()
+        {
+            return GetDbSet().ProjectTo<VotingDto>(_mapper.ConfigurationProvider).ToListAsync();
+        }
+
+        public Task<GetVotingDto> GetVotingDtoAsync(int id)
+        {
+            return GetDto<GetVotingDto>(id);
+        }
+
+        public Task<UpdateVotingDto> GetVotingForUpdateAsync(int id)
+        {
+            return GetDto<UpdateVotingDto>(id);
+        }
+
+        public override async Task<ICollection<Voting>> GetAllAsync()
+        {
+            return await GetDbSet().Include(voting => voting.Participants).Include(voting => voting.Votes)
+                .ToListAsync();
+        }
         
-        private readonly IMapper _mapper;
-
-            public VotingRepository(VotingDbContext dbContext, IMapper mapper) : base(dbContext)
-            {
-                _dbContext = dbContext;
-                _mapper = mapper;
-            }
-            
-            public Task<List<GetAllVotingDto>> GetAllVotingDtosAsync()
-            {
-                return GetDbSet().ProjectTo<GetAllVotingDto>(_mapper.ConfigurationProvider).ToListAsync();
-            }
-
-            public Task<GetVotingDto> GetVotingDtoAsync(int id)
-            {
-                return GetDbSet().Where(voting => voting.Id == id).ProjectTo<GetVotingDto>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
-            }
-            
+        
     }
 }

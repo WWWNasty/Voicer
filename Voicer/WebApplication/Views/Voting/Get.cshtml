@@ -1,3 +1,5 @@
+@using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos
+@using DataAccessLayer.Models.Votes.Enums
 @model BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos.GetVotingDto;
 
 @{
@@ -11,11 +13,14 @@
         <h1>My awesome voting</h1>
     </div>
     <div class="col-sm">
-        <button type="button" class="btn btn-outline-secondary ">Вторичный</button> 
+        <a asp-action="Invite" asp-route-id="@Model.Id" class="btn btn-outline-secondary ">Invite user</a> 
     
-        <button type="button" class="btn btn-outline-secondary ">Вторичный</button> 
+        <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Edit voting</a> 
         
-        <button type="button" class="btn btn-danger ">Опасность</button>
+        @if (Model.User.Email == User.Identity.Name)
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger ">Remove voting</a>
+        }
     </div>
 </div>
 <div class="row">
@@ -28,9 +33,8 @@
                 <h6 class="card-subtitle mb-2 text-muted">Start Date</h6>
                 <p class="card-text">@Model.StartDate</p>
                 <h6 class="card-subtitle mb-2 text-muted">Partisipants count</h6>
-                <p class="card-text">_______-</p>
-
-
+                <p class="card-text">@Model.Participants.Count</p>
+                
             </div>
         </div>
     </div>
@@ -40,11 +44,21 @@
         <div class="card" >
             <div class="card-body">
                 <h5 class="card-title">Voting</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Подзаголовок карты</h6>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <partial name="_Voting"/>
+                <h6 class="card-subtitle mb-2 text-muted float-right">02d 04 h 59m</h6>
+                @if (Model.VotingStatus == VotingStatus.Active)
+                {
+                    <partial name="_VotingStatusActive"/>
+                }
+                @if (Model.VotingStatus == VotingStatus.Ended)
+                {
+                    <partial name="_VotingStatusEnded"/>
+                }
+                @if (Model.VotingStatus == VotingStatus.Upcoming)
+                {
+                    <partial name="_VotingStatusUpcoming"/>
+                }
 
-                 @* <partial name="_VotingStatus" model="@Model.SubCategoryId" />  *@
+                @* <partial name="_VotingStatus" model="@Model.SubCategoryId" />  *@
             </div>
         </div>
     </div>

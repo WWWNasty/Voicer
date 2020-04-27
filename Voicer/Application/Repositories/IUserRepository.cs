@@ -1,9 +1,10 @@
+using BusinessLogicLayer.Abstraction.Repositories.Base;
 using DataAccessLayer.Models.Users;
 
-namespace BusinessLogicLayer.Abstraction.Repositories.Base
+namespace BusinessLogicLayer.Abstraction.Repositories
 {
-    public interface IUserRepository: IBaseRepository<User, int>
+    public interface IUserRepository: IBaseRepository<User, string>
     {
-       User FindUser(string search);
+       User FindUserByEmail(string search);
     }
 }
