@@ -6,8 +6,7 @@
 }
 
 <h1>Edit voting</h1>
-<form>
+<form method="post">
     <partial name="_Voting" />
-    
-    <button type="button" class="btn btn-success">Save</button>
+    <input type="hidden" asp-for="Id"/>
 </form>

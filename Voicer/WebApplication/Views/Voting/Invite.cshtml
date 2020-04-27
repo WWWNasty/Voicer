@@ -1,4 +1,5 @@
-@model object
+@using DataAccessLayer.Models.Votes.Enums
+@model BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos.InviteUserDto;
 
 @{
     ViewBag.Title = "title";
@@ -17,6 +18,6 @@
     <br>
     <br>
     <br>
-    <button type="button" class="btn btn-success">Invite</button>
+    <a asp-action="Invite" class="btn btn-success">Invite</a>
 
 </form>

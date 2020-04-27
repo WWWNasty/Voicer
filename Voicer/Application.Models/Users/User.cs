@@ -1,16 +1,13 @@
 using System.Collections.Generic;
 using DataAccessLayer.Models.Entities;
 using DataAccessLayer.Models.Votes;
+using Microsoft.AspNetCore.Identity;
 
 namespace DataAccessLayer.Models.Users
 {
-    public class User: Entity<int>
+    public class User: IdentityUser, IEntity<string>
     {
         public string Name { get; set; }
-
-        public string Email { get; set; }
-
-        public string Password { get; set; }
 
         public ICollection<Voting> CreatedVoting { get; set; }
         
