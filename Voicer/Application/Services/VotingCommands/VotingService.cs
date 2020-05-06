@@ -12,10 +12,10 @@ using DataAccessLayer.Models.Votes.Enums;
 
 namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
 {
-    public class VotingService: IVotingService
+    public class VotingService : IVotingService
     {
         private readonly IUnitOfWork _unitOfWork;
-        
+
         private readonly IMapper _mapper;
 
         public VotingService(IUnitOfWork unitOfWork, IMapper mapper)
@@ -27,19 +27,17 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
         public Task<UpdateVotingDto> GetVotingForUpdateAsync(int id)
         {
             return _unitOfWork.VotingRepository.GetVotingForUpdateAsync(id);
-            
         }
 
-        public async Task<GetAllVotingDto> GetAllVotingAsync()
+        public async Task<GetAllVotingDto> GetAllVotingAsync(string userId)
         {
-            var allVoting = await _unitOfWork.VotingRepository.GetAllAsync();
+            var allVoting = await _unitOfWork.VotingRepository.GetAllAsync(userId);
 
             return new GetAllVotingDto()
             {
                 ActiveVoting = GetVotingWithStatus(allVoting, VotingStatus.Active),
                 UpcomingVoting = GetVotingWithStatus(allVoting, VotingStatus.Upcoming),
                 ClosedVoting = GetVotingWithStatus(allVoting, VotingStatus.Ended)
-                
             };
         }
 
@@ -55,16 +53,12 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
             {
                 _unitOfWork.VotingRepository.Delete(voting);
                 await _unitOfWork.SaveChangesAsync();
-
             }
-            
         }
 
         public async Task<bool> HasUserVotedAsync(int votingId, string userId)
         {
-            
             return await _unitOfWork.VoteRepository.UserHasVotedAsync(votingId, userId);
-            
         }
 
         public async Task<int> AddAsync(CreateVotingDto dto, ClaimsPrincipal user)
@@ -72,7 +66,7 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
             var voting = _mapper.Map<Voting>(dto);
 
             voting.UserId = user.GetUserId();
-                
+
             _unitOfWork.VotingRepository.Create(voting);
 
             await _unitOfWork.SaveChangesAsync();
@@ -85,7 +79,7 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
             var voting = await _unitOfWork.VotingRepository.GetAsync(dto.Id);
 
             _mapper.Map(dto, voting);
-            
+
             _unitOfWork.VotingRepository.Update(voting);
 
             await _unitOfWork.SaveChangesAsync();
@@ -104,36 +98,27 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
                     Voting = voting
                 });
                 await _unitOfWork.SaveChangesAsync();
-
             }
-            
         }
 
         public async Task MakeVoteAsync(MakeVoteDto dto)
         {
-            //var vote = await _unitOfWork.VoteRepository.GetAsync(dto.VotingOptionId);
-            // if (vote != null)
-            // {
-                VotingOption votingOption = await _unitOfWork.VotingOptionRepository.GetAsync(dto.VotingOptionId);
+            VotingOption votingOption = await _unitOfWork.VotingOptionRepository.GetAsync(dto.VotingOptionId);
 
-                var votingId = votingOption.VotingId;
-                
-                if (! await _unitOfWork.VoteRepository.UserHasVotedAsync(votingId!.Value, dto.User.GetUserId()))
+            var votingId = votingOption.VotingId;
+
+            if (!await _unitOfWork.VoteRepository.UserHasVotedAsync(votingId!.Value, dto.User.GetUserId()))
+            {
+                _unitOfWork.VoteRepository.Create(new Vote()
                 {
-                    _unitOfWork.VoteRepository.Create(new Vote()
-                    {
-                        VotingOptionId = votingOption.Id,
-                        // ReSharper disable once PossibleInvalidOperationException
-                        VotingId = votingId.Value,
-                        UserId = dto.User.GetUserId()
-
-                    });
-                    await _unitOfWork.SaveChangesAsync();
-                }
+                    VotingOptionId = votingOption.Id,
+                    VotingId = votingId.Value,
+                    UserId = dto.User.GetUserId()
+                });
+                await _unitOfWork.SaveChangesAsync();
+            }
         }
 
         public Task<GetVotingDto> GetVotingAsync(int id) => _unitOfWork.VotingRepository.GetVotingDtoAsync(id);
-        
-        
     }
 }

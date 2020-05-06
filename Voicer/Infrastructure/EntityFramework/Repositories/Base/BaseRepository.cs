@@ -1,15 +1,16 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BusinessLogicLayer.Abstraction.Repositories.Base;
 using DataAccessLayer.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 namespace Infrastructure.EntityFramework.Repositories.Base
 {
-    public abstract class BaseRepository<TEntity, TId> : IBaseRepository<TEntity, TId> where TEntity : class, IEntity<TId>
+    public abstract class BaseRepository<TEntity, TId> : IBaseRepository<TEntity, TId>
+        where TEntity : class, IEntity<TId>
     {
         protected readonly VotingDbContext _context;
         protected readonly IMapper _mapper;
@@ -19,17 +20,18 @@ namespace Infrastructure.EntityFramework.Repositories.Base
             _context = context;
             _mapper = mapper;
         }
+
         public virtual async Task<TEntity> GetAsync(TId id)
         {
             var result = await GetDbSet().FindAsync(id);
-             
+
             return result;
         }
 
-        public virtual async Task<ICollection<TEntity>> GetAllAsync()
+        public virtual async Task<ICollection<TEntity>> GetAllAsync(string userId)
         {
             List<TEntity> result = await GetDbSet().ToListAsync();
-           
+
             return result;
         }
 
@@ -59,7 +61,8 @@ namespace Infrastructure.EntityFramework.Repositories.Base
 
         public Task<T> GetDto<T>(TId id)
         {
-            return GetDbSet().Where(entity => entity.Id.Equals(id)).ProjectTo<T>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+            return GetDbSet().Where(entity => entity.Id.Equals(id)).ProjectTo<T>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
         }
     }
 }

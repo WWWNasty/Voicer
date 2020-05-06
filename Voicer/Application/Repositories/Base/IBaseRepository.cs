@@ -7,12 +7,12 @@ namespace BusinessLogicLayer.Abstraction.Repositories.Base
     public interface IBaseRepository<TEntity, TId> where TEntity : IEntity<TId>
     {
         Task<TEntity> GetAsync(TId id);
-        Task<ICollection<TEntity>> GetAllAsync();
-        
+        Task<ICollection<TEntity>> GetAllAsync(string userId);
+
         TEntity Create(TEntity entity);
 
         TEntity Update(TEntity entity);
-        
+
         void Delete(TEntity entity);
 
         Task<T> GetDto<T>(TId id);

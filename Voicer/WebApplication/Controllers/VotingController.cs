@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using BusinessLogicLayer.Abstraction.Extensions;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApplication.Models;
@@ -29,28 +24,28 @@ namespace WebApplication.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _votingService.GetAllVotingAsync());
+            return View(await _votingService.GetAllVotingAsync(User.GetUserId()));
         }
-        
-        public async Task<IActionResult> Get([FromRoute]int id)
+
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
             GetVotingDto getVotingDto = await _votingService.GetVotingAsync(id);
 
 
             getVotingDto.UserVoted = await _votingService.HasUserVotedAsync(id, User.GetUserId());
-            
+
             return View(getVotingDto);
         }
 
         [Authorize]
-        public IActionResult Delete([FromRoute]int id)
+        public IActionResult Delete([FromRoute] int id)
         {
             _votingService.DeleteAsync(new DeleteVotingDto
             {
                 Id = id,
                 User = User
             });
-            
+
             return RedirectToAction("Index");
         }
 
@@ -59,10 +54,10 @@ namespace WebApplication.Controllers
         {
             return View();
         }
-        
+
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Add([FromForm]CreateVotingDto dto)
+        public async Task<IActionResult> Add([FromForm] CreateVotingDto dto)
         {
             if (ModelState.IsValid)
             {
@@ -88,11 +83,12 @@ namespace WebApplication.Controllers
         public async Task<IActionResult> Invite([FromForm] InviteUserDto dto)
         {
             await _votingService.InviteAsync(dto);
-            return RedirectToAction("Get",  new {id = dto.VotingId});
+            return RedirectToAction("Get", new {id = dto.VotingId});
         }
-        public async Task<IActionResult> Update([FromRoute]int id)
+
+        public async Task<IActionResult> Update([FromRoute] int id)
         {
-            return View( await _votingService.GetVotingForUpdateAsync(id));
+            return View(await _votingService.GetVotingForUpdateAsync(id));
         }
 
         [Authorize]
@@ -104,19 +100,19 @@ namespace WebApplication.Controllers
                 User = User
             };
             await _votingService.MakeVoteAsync(makeVoteDto);
-            
-            return Redirect(Request.Headers["Referer"].ToString()); 
+
+            return Redirect(Request.Headers["Referer"].ToString());
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Update([FromForm] UpdateVotingDto dto)
         {
             await _votingService.UpdateAsync(dto);
 
-            return RedirectToAction("Get",  new {id = dto.Id}); 
+            return RedirectToAction("Get", new {id = dto.Id});
         }
-       
-        
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

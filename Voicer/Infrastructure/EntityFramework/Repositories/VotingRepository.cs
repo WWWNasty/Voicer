@@ -4,9 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BusinessLogicLayer.Abstraction.Repositories;
-using BusinessLogicLayer.Abstraction.Repositories.Base;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos;
-using DataAccessLayer.Models.Entities;
 using DataAccessLayer.Models.Votes;
 using Infrastructure.EntityFramework.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
@@ -20,9 +18,12 @@ namespace Infrastructure.EntityFramework.Repositories
         {
         }
 
-        public Task<List<VotingDto>> GetAllVotingDtosAsync()
+        public Task<List<VotingDto>> GetAllVotingDtosAsync(string userId)
         {
-            return GetDbSet().ProjectTo<VotingDto>(_mapper.ConfigurationProvider).ToListAsync();
+            return GetDbSet()
+                .Where(voting => voting.User.Id == userId)
+                .Include(voting => voting.Participants.Where(votingParticipant => votingParticipant.UserId == userId))
+                .ProjectTo<VotingDto>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
         public Task<GetVotingDto> GetVotingDtoAsync(int id)
@@ -35,12 +36,14 @@ namespace Infrastructure.EntityFramework.Repositories
             return GetDto<UpdateVotingDto>(id);
         }
 
-        public override async Task<ICollection<Voting>> GetAllAsync()
+        public override async Task<ICollection<Voting>> GetAllAsync(string userId)
         {
-            return await GetDbSet().Include(voting => voting.Participants).Include(voting => voting.Votes)
+            return await GetDbSet()
+                .Include(voting => voting.Participants)
+                .Include(voting => voting.Votes)
+                .Where(voting =>
+                    voting.User.Id == userId || voting.Participants.Any(participant => participant.UserId == userId))
                 .ToListAsync();
         }
-        
-        
     }
 }
