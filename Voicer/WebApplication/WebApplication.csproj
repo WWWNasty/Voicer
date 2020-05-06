@@ -35,4 +35,12 @@
       <Folder Include="Areas\Identity\Data" />
     </ItemGroup>
 
+
+<!--    <ItemGroup>-->
+<!--      <Content Update="Views\Voting\_VotingStatusActiveDoneVote.cshtml">-->
+<!--        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>-->
+<!--        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>-->
+<!--      </Content>-->
+<!--    </ItemGroup>-->
+
 </Project>

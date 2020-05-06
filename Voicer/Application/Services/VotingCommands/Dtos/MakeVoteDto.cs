@@ -1,13 +1,13 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos
 {
-    public class DeleteVotingDto
+    public class MakeVoteDto
     {
-        public int Id { get; set; }
+        [Required] public int VotingOptionId { get; set; }
 
-        [Required]
         public ClaimsPrincipal User { get; set; }
     }
 }

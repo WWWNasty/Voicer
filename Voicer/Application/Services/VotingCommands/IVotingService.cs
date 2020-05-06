@@ -19,6 +19,10 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
 
         Task InviteAsync(InviteUserDto dto);
 
+        Task MakeVoteAsync(MakeVoteDto dto);
+        
         Task DeleteAsync(DeleteVotingDto dto);
+
+        Task<bool> HasUserVotedAsync(int votingId, string userId);
     }
 }

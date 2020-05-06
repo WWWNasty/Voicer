@@ -1,10 +1,13 @@
 @using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos
+@using DataAccessLayer.Models.Votes
 @model GetVotingDto;
 
-            @foreach (int i in Enumerable.Range(0, CreateVotingDto.VotingOptionsCount))
-            {
-                <div class="col-sm-7 mt-2">
 
-                </div>
-            }
+<div class="col-sm-7 mt-2">
+    
+    @foreach (VotingOptionDto option in Model.VotingOptions)
+    {
+        <a asp-action="MakeVote" asp-route-votingOptionId="@option.Id" class="btn btn-outline-secondary">@(option.Name)</a>
 
+    }
+</div>

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using DataAccessLayer.Models.Votes;
 
 namespace DataAccessLayer.Models.Users
@@ -8,8 +9,10 @@ namespace DataAccessLayer.Models.Users
 
         public Voting Voting { get; set; }
 
+        [Required]
         public int VotingId { get; set; }
 
+        [Required]
         public string UserId { get; set; }
     }
 }

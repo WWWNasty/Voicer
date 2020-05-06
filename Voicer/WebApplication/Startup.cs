@@ -38,6 +38,8 @@ namespace WebApplication
             services.AddScoped<IVotingRepository, VotingRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IVotingService, VotingService>();
+            services.AddScoped<IVotingOptionRepository, VotingOptionRepository>();
+            services.AddScoped<IVoteRepository, VoteRepository>();
             services.AddAutoMapper(typeof(VotingMappingProfile));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddDbContext<VotingDbContext>(options =>

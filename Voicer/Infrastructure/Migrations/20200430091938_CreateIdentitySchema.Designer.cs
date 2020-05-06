@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(VotingDbContext))]
-    [Migration("20200425204238_CreateIdentitySchema")]
+    [Migration("20200430091938_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -146,12 +146,13 @@ namespace Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("VotingId")
+                    b.Property<int>("VotingId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("VotingOptionId")
+                    b.Property<int>("VotingOptionId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -172,18 +173,23 @@ namespace Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
-                        .HasColumnType("TEXT");
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(500);
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(100);
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -200,9 +206,11 @@ namespace Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(100);
 
-                    b.Property<int?>("VotingId")
+                    b.Property<int>("VotingId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -370,22 +378,30 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("DataAccessLayer.Models.Users.User", "User")
                         .WithMany("Votes")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DataAccessLayer.Models.Votes.Voting", "Voting")
                         .WithMany("Votes")
-                        .HasForeignKey("VotingId");
+                        .HasForeignKey("VotingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DataAccessLayer.Models.Votes.VotingOption", "VotingOption")
                         .WithMany()
-                        .HasForeignKey("VotingOptionId");
+                        .HasForeignKey("VotingOptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.Votes.Voting", b =>
                 {
                     b.HasOne("DataAccessLayer.Models.Users.User", "User")
                         .WithMany("CreatedVoting")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.Votes.VotingOption", b =>
@@ -393,7 +409,8 @@ namespace Infrastructure.Migrations
                     b.HasOne("DataAccessLayer.Models.Votes.Voting", "Voting")
                         .WithMany("VotingOptions")
                         .HasForeignKey("VotingId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

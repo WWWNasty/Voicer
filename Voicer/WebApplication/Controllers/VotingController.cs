@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using BusinessLogicLayer.Abstraction.Extensions;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos;
 using Microsoft.AspNetCore.Authorization;
@@ -32,7 +34,12 @@ namespace WebApplication.Controllers
         
         public async Task<IActionResult> Get([FromRoute]int id)
         {
-            return View(await _votingService.GetVotingAsync(id));
+            GetVotingDto getVotingDto = await _votingService.GetVotingAsync(id);
+
+
+            getVotingDto.UserVoted = await _votingService.HasUserVotedAsync(id, User.GetUserId());
+            
+            return View(getVotingDto);
         }
 
         [Authorize]
@@ -46,7 +53,6 @@ namespace WebApplication.Controllers
             
             return RedirectToAction("Index");
         }
-        
 
         [Authorize]
         public IActionResult Add()
@@ -58,9 +64,14 @@ namespace WebApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromForm]CreateVotingDto dto)
         {
-            int createdVotingId = await _votingService.AddAsync(dto, User);
+            if (ModelState.IsValid)
+            {
+                int createdVotingId = await _votingService.AddAsync(dto, User);
 
-            return RedirectToAction("Get",  new {id = createdVotingId});
+                return RedirectToAction("Get", new {id = createdVotingId});
+            }
+
+            return View(dto);
         }
 
         [Authorize]
@@ -84,6 +95,19 @@ namespace WebApplication.Controllers
             return View( await _votingService.GetVotingForUpdateAsync(id));
         }
 
+        [Authorize]
+        public async Task<IActionResult> MakeVote([FromQuery] int votingOptionId)
+        {
+            var makeVoteDto = new MakeVoteDto
+            {
+                VotingOptionId = votingOptionId,
+                User = User
+            };
+            await _votingService.MakeVoteAsync(makeVoteDto);
+            
+            return Redirect(Request.Headers["Referer"].ToString()); 
+        }
+        
         [HttpPost]
         public async Task<IActionResult> Update([FromForm] UpdateVotingDto dto)
         {

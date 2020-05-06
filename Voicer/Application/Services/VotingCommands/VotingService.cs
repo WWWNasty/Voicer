@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -55,20 +54,24 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
             if (voting != null && voting.UserId == votingDto.User.GetUserId())
             {
                 _unitOfWork.VotingRepository.Delete(voting);
-                
+                await _unitOfWork.SaveChangesAsync();
+
             }
             
-            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<bool> HasUserVotedAsync(int votingId, string userId)
+        {
+            
+            return await _unitOfWork.VoteRepository.UserHasVotedAsync(votingId, userId);
+            
         }
 
         public async Task<int> AddAsync(CreateVotingDto dto, ClaimsPrincipal user)
         {
             var voting = _mapper.Map<Voting>(dto);
 
-            voting.UserId = user.Claims
-                .Where(claim => claim.Type == ClaimTypes.NameIdentifier)
-                .Select(claim => claim.Value)
-                .First();
+            voting.UserId = user.GetUserId();
                 
             _unitOfWork.VotingRepository.Create(voting);
 
@@ -100,9 +103,33 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
                     User = findUserByEmail,
                     Voting = voting
                 });
+                await _unitOfWork.SaveChangesAsync();
+
             }
             
-            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task MakeVoteAsync(MakeVoteDto dto)
+        {
+            //var vote = await _unitOfWork.VoteRepository.GetAsync(dto.VotingOptionId);
+            // if (vote != null)
+            // {
+                VotingOption votingOption = await _unitOfWork.VotingOptionRepository.GetAsync(dto.VotingOptionId);
+
+                var votingId = votingOption.VotingId;
+                
+                if (! await _unitOfWork.VoteRepository.UserHasVotedAsync(votingId!.Value, dto.User.GetUserId()))
+                {
+                    _unitOfWork.VoteRepository.Create(new Vote()
+                    {
+                        VotingOptionId = votingOption.Id,
+                        // ReSharper disable once PossibleInvalidOperationException
+                        VotingId = votingId.Value,
+                        UserId = dto.User.GetUserId()
+
+                    });
+                    await _unitOfWork.SaveChangesAsync();
+                }
         }
 
         public Task<GetVotingDto> GetVotingAsync(int id) => _unitOfWork.VotingRepository.GetVotingDtoAsync(id);

@@ -13,13 +13,13 @@
         <h1>My awesome voting</h1>
     </div>
     <div class="col-sm">
-        <a asp-action="Invite" asp-route-id="@Model.Id" class="btn btn-outline-secondary ">Invite user</a> 
+        <a asp-action="Invite" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Invite user</a> 
     
         <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Edit voting</a> 
         
         @if (Model.User.Email == User.Identity.Name)
         {
-            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger ">Remove voting</a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Remove voting</a>
         }
     </div>
 </div>
@@ -34,7 +34,8 @@
                 <p class="card-text">@Model.StartDate</p>
                 <h6 class="card-subtitle mb-2 text-muted">Partisipants count</h6>
                 <p class="card-text">@Model.Participants.Count</p>
-                
+                <h6 class="card-subtitle mb-2 text-muted">Vote count</h6>
+                <p class="card-text">@Model.Votes.Count</p>
             </div>
         </div>
     </div>
@@ -45,9 +46,16 @@
             <div class="card-body">
                 <h5 class="card-title">Voting</h5>
                 <h6 class="card-subtitle mb-2 text-muted float-right">02d 04 h 59m</h6>
-                @if (Model.VotingStatus == VotingStatus.Active)
+                
+                
+                
+                @if (Model.VotingStatus == VotingStatus.Active && Model.UserVoted == false)
                 {
                     <partial name="_VotingStatusActive"/>
+                }
+                @if (Model.VotingStatus == VotingStatus.Active && Model.UserVoted == true)
+                {
+                    <partial name="_VotingStatusActiveDoneVote"/>
                 }
                 @if (Model.VotingStatus == VotingStatus.Ended)
                 {
