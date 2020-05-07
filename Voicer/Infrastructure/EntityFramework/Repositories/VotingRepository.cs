@@ -18,17 +18,24 @@ namespace Infrastructure.EntityFramework.Repositories
         {
         }
 
-        public Task<List<VotingDto>> GetAllVotingDtosAsync(string userId)
+        public async Task<List<VotingDto>> GetAllVotingDtosAsync(string userId)
         {
-            return GetDbSet()
+            return await GetDbSet()
                 .Where(voting => voting.User.Id == userId)
                 .Include(voting => voting.Participants.Where(votingParticipant => votingParticipant.UserId == userId))
                 .ProjectTo<VotingDto>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
-        public Task<GetVotingDto> GetVotingDtoAsync(int id)
+        public async Task<GetVotingDto> GetVotingDtoAsync(int id)
         {
-            return GetDto<GetVotingDto>(id);
+            return await GetDto<GetVotingDto>(id);
+        }
+
+        public async Task<Voting> GetVotingDtoWithParticipantsAsync(int id)
+        {
+            return await GetDbSet()
+                .Include(voting => voting.Participants)
+                .FirstOrDefaultAsync(voting => voting.Id == id);
         }
 
         public Task<UpdateVotingDto> GetVotingForUpdateAsync(int id)

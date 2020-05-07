@@ -13,5 +13,7 @@ namespace BusinessLogicLayer.Abstraction.Repositories
         Task<GetVotingDto> GetVotingDtoAsync(int id);
 
         Task<UpdateVotingDto> GetVotingForUpdateAsync(int id);
+
+        Task<Voting> GetVotingDtoWithParticipantsAsync(int id);
     }
 }

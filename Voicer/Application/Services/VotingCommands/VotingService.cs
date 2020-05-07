@@ -88,9 +88,10 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
         public async Task InviteAsync(InviteUserDto dto)
         {
             //достать сущьность головонния из репозитория потом добавить в нее участников голосования пользователя который достанем из репозитория пользователей сохраним изменения
-            Voting voting = await _unitOfWork.VotingRepository.GetAsync(dto.VotingId);
+            Voting voting = await _unitOfWork.VotingRepository.GetVotingDtoWithParticipantsAsync(dto.VotingId);
             User findUserByEmail = _unitOfWork.UserRepository.FindUserByEmail(dto.Email);
-            if (voting != null && findUserByEmail != null)
+            if (voting != null && findUserByEmail != null &&
+                voting.Participants.All(user => user.UserId != findUserByEmail.Id))
             {
                 voting.Participants.Add(new UserVoting
                 {
