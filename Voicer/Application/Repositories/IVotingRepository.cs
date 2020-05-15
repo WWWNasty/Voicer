@@ -2,15 +2,28 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BusinessLogicLayer.Abstraction.Repositories.Base;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos;
-using DataAccessLayer.Models.Entities;
 using DataAccessLayer.Models.Votes;
 
 namespace BusinessLogicLayer.Abstraction.Repositories
 {
-    public interface IVotingRepository: IBaseRepository<Voting, int>
+    public interface IVotingRepository : IBaseRepository<Voting, int>
     {
-        Task<List<GetAllVotingDto>> GetAllVotingDtosAsync();
+        Task<List<VotingDto>> GetAllVotingDtosAsync(string userId);
+
+        Task<Voting> Get(GetOptions options);
 
         Task<GetVotingDto> GetVotingDtoAsync(int id);
+
+        Task<UpdateVotingDto> GetVotingForUpdateAsync(int id);
+    }
+
+    public class GetOptions
+    {
+        public int Id { get; set; }
+        public bool IncludeParticipants { get; set; }
+
+        public bool IncludeVotingOptions { get; set; }
+
+        public bool IncludeVotes { get; set; }
     }
 }

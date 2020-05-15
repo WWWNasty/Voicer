@@ -1,8 +1,10 @@
 @model BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos.CreateVotingDto;
 
+<div asp-validation-summary="All" class="validation text-danger"></div>
 <div class="form-group">
     <label asp-for="Name">Title</label>
     <input asp-for="Name" class="form-control"/>
+    <span asp-validation-for="Name" class="text-danger"></span>
 </div>
 
 <div class="form-group">
@@ -12,30 +14,44 @@
 
 <div class="form-group">
     <label asp-for="StartDate">Start date</label>
-    <input asp-for="StartDate" type="date" class="form-control"/>
+    @* <input asp-for="StartDate" type="date" class="form-control"  data-date-format="yyyy-mm-dd" data-time-format='hh:ii' placeholder="yyyy-mm-dd  hh:ii"/> *@
+    <input asp-for="StartDate" class="form-control datepicker-here" data-timepicker="true" data-date-format="yyyy-mm-dd" data-time-format='hh:ii' placeholder="yyyy-mm-dd  hh:ii"/>
+
 </div>
 
 <div class="form-group">
     <label asp-for="EndDate">End date</label>
-    <input asp-for="EndDate" type="date" class="form-control"/>
+    <input asp-for="EndDate" class="form-control datepicker-here" data-timepicker="true" data-date-format="yyyy-mm-dd" data-time-format='hh:ii' placeholder="yyyy-mm-dd  hh:ii"/>
 </div>
 
 <div class="form-group">
-    <small><h9 class="card-subtitle mb-2 text-muted">Voting options</h9></small>
+    <small>
+        <h9 class="card-subtitle mb-2 text-muted">Voting options</h9>
+    </small>
     <div class="voting-options">
         <div class="row">
-            <div class="col-sm-7">
-                <input asp-for="VotingOptions" class="form-control"/>
+
+            <span style="display: none" id="voting-options-count">@Model.VotingOptions.Length</span>
+
+            @foreach (int i in Enumerable.Range(0, Model.VotingOptions.Length))
+            {
+                <div class="col-sm-7 mt-2">
+                    <input asp-for="VotingOptions[i].Name" class="form-control voting-option"/>
+                </div>
+            }
+            <div class="col-sm-7 mt-2 add-option-container">
+                <input type="button" value="Add option" class="addPick btn btn-outline-secondary"/>
+                <input type="button" value="Delete option" class="deletePick btn btn-outline-secondary"/>
             </div>
 
-            <div class="col-sm">
-                <button class="btn btn-outline-secondary" type="button" id="button-addon2">+ Add option</button>
+            <div class="col-sm-7 mt-2" id="voting-option-template" style="display: none">
+                <input asp-for="VotingOptions[0].Name" value="" class="form-control"/>
             </div>
+
         </div>
     </div>
-    
+    <div class="mt-2">
+        <input type="submit" value="Save" class="btn btn-success"/>
+    </div>
 
 </div>
-
-
-

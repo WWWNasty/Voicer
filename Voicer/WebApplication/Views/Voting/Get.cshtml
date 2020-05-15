@@ -1,3 +1,4 @@
+@using DataAccessLayer.Models.Votes.Enums
 @model BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos.GetVotingDto;
 
 @{
@@ -5,87 +6,110 @@
     Layout = "_Layout";
 }
 <div class="row justify-content-md-center">
-<div class="col-sm-9">
-<div class="row">
-    <div class="col-sm">
-        <h1>My awesome voting</h1>
-    </div>
-    <div class="col-sm">
-        <button type="button" class="btn btn-outline-secondary ">Вторичный</button> 
-    
-        <button type="button" class="btn btn-outline-secondary ">Вторичный</button> 
-        
-        <button type="button" class="btn btn-danger ">Опасность</button>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-6">
-        <div class="card" >
-            <div class="card-body">
-                <h5 class="card-title">Details</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Description</h6>
-                <p class="card-text">@Model.Description</p>
-                <h6 class="card-subtitle mb-2 text-muted">Start Date</h6>
-                <p class="card-text">@Model.StartDate</p>
-                <h6 class="card-subtitle mb-2 text-muted">Partisipants count</h6>
-                <p class="card-text">_______-</p>
+    <div class="col-sm-9">
+        <div class="row">
+            <div class="col-sm">
+                <h1>My awesome voting</h1>
+            </div>
+            <div class="col-sm">
+                <a asp-action="Invite" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Invite user</a>
 
+                @if (Model.VotingStatus == VotingStatus.Upcoming)
+                {
+                    <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Edit voting</a>
+                }
 
+                @if (Model.User.Email == User.Identity.Name)
+                {
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Remove voting</a>
+                }
             </div>
         </div>
-    </div>
-    
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Details</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Description</h6>
+                        <p class="card-text">@Model.Description</p>
+                        <h6 class="card-subtitle mb-2 text-muted">Start Date</h6>
+                        <p class="card-text">@Model.StartDate</p>
+                        <h6 class="card-subtitle mb-2 text-muted">Partisipants count</h6>
+                        <p class="card-text">@Model.Participants.Count</p>
+                        <h6 class="card-subtitle mb-2 text-muted">Vote count</h6>
+                        <p class="card-text">@Model.Votes.Count</p>
+                    </div>
+                </div>
+            </div>
 
-    <div class="col-sm-6">
-        <div class="card" >
-            <div class="card-body">
-                <h5 class="card-title">Voting</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Подзаголовок карты</h6>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <partial name="_Voting"/>
 
-                 @* <partial name="_VotingStatus" model="@Model.SubCategoryId" />  *@
+            <div class="col-sm-6">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">Voting</h5>
+                        <h6 class="card-subtitle mb-2 text-muted float-right">02d 04 h 59m</h6>
+
+
+                        @if (Model.VotingStatus == VotingStatus.Active && !Model.UserVoted)
+                        {
+                            <partial name="_VotingStatusActive"/>
+                        }
+                        @if (Model.VotingStatus == VotingStatus.Active && Model.UserVoted)
+                        {
+                            <partial name="_VotingStatusActiveDoneVote"/>
+                        }
+                        @if (Model.VotingStatus == VotingStatus.Ended)
+                        {
+                            <partial name="_VotingStatusEnded"/>
+                        }
+                        @if (Model.VotingStatus == VotingStatus.Upcoming)
+                        {
+                            <partial name="_VotingStatusUpcoming"/>
+                        }
+
+                        @* <partial name="_VotingStatus" model="@Model.SubCategoryId" />  *@
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<br>
-<form>
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card" >
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Chat</li>
-                    <li class="list-group-item">
-                        <h6 class="card-subtitle mb-2 text-muted">user1 - 12.48</h6>
-                        <p class="card-text">blablablabla</p>
+        <br>
+        <form>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card shadow p-3 mb-5 bg-white rounded">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Chat</li>
+                            <li class="list-group-item">
 
-                        <h6 class="card-subtitle mb-2 text-muted">user2 - 21.58</h6>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-
-                        <h6 class="card-subtitle mb-2 text-muted">user1 - 22.21</h6>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-
-                    </li>
-                    <li class="list-group-item">
-                        <div class="input-group mb-1">
-                            
-                                <div class="col-sm-9">
-                                <input type="text" class="form-control" placeholder="Insert message text here">
+                                <div id="message-template" style="display: none">
+                                    <h6 class="card-subtitle mb-2 text-muted">{{userName}} - {{date}}</h6>
+                                    <p class="card-text">{{text}}</p>
                                 </div>
 
-                                <div class="col-sm">
-                                    <button class="btn btn-outline-secondary" type="button" id="button-addon2">Send message</button>
-                                </div>
-                            
+                                <div id="chatroom"></div>
+                                <input type="hidden" value="@Model.ChatId" id="chatId"/>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="input-group mb-1" id="inputForm">
 
-                        </div>
-                    </li>
-                </ul>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="message" placeholder="Insert message text here">
+                                    </div>
+
+                                    <div class="col-sm">
+                                        <input class="btn btn-outline-secondary" type="button" id="sendBtn" value="Send message"/>
+                                        @* <button class="btn btn-outline-secondary" type="button" id="button-addon2">Send </button> *@
+                                    </div>
+
+
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
-        </div>
-        
+        </form>
+
     </div>
-</form>
-</div>
 </div>

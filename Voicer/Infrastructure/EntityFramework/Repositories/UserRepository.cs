@@ -1,20 +1,21 @@
-using System;
-using System.Linq;
-using BusinessLogicLayer.Abstraction.Repositories.Base;
+using System.Threading.Tasks;
+using AutoMapper;
+using BusinessLogicLayer.Abstraction.Repositories;
 using DataAccessLayer.Models.Users;
 using Infrastructure.EntityFramework.Repositories.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.EntityFramework.Repositories
 {
-    public class UserRepository: BaseRepository<User, int>, IUserRepository
+    public class UserRepository : BaseRepository<User, string>, IUserRepository
     {
-        public UserRepository(VotingDbContext context) : base(context)
+        public UserRepository(VotingDbContext context, IMapper mapper) : base(context, mapper)
         {
         }
 
-        public User FindUser(string search)
+        public async Task<User> FindUserByEmailAsync(string email)
         {
-            throw new NotImplementedException(); // GetDbSet().FirstOrDefault(user => user.Email.ToLower().Trim());
+            return await GetDbSet().FirstOrDefaultAsync(user => user.Email == email);
         }
     }
 }

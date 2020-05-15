@@ -66,24 +66,28 @@ body {
   position: absolute;
   bottom: 0;
   width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
 }
 
-.btn-success{
-  background: #96E48F;
-  border-radius: 8px;
-  border-color: #96E48F;
+.btn-success {
+    background: #96E48F;
+    border-radius: 8px;
+    border-color: #96E48F;
 }
 
-.btn-outline-danger{
-   border-color: #D67575;
+.btn-light {
+    border-radius: 8px;
+}
+
+.btn-outline-danger {
+    border-color: #D67575;
     border-radius: 8px;
     color: #D67575;
 
 }
 
-.btn-danger{
+.btn-danger {
     background: #D67575;
     border-radius: 8px;
     border-color: #D67575;
@@ -98,4 +102,14 @@ body {
 .voting-options{
     border: 1px solid #e6e6e6;
     padding: 20px 10px 20px 10px;
+}
+
+.btn-circle {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 15px !important;
+    text-align: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    display: block !important;
 }

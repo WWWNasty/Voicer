@@ -4,37 +4,63 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BusinessLogicLayer.Abstraction.Repositories;
-using BusinessLogicLayer.Abstraction.Repositories.Base;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos;
-using DataAccessLayer.Models.Entities;
 using DataAccessLayer.Models.Votes;
 using Infrastructure.EntityFramework.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.EntityFramework.Repositories
 {
-    public class  VotingRepository: BaseRepository<Voting,int>, IVotingRepository
+    public class VotingRepository : BaseRepository<Voting, int>, IVotingRepository
 
     {
-        private readonly VotingDbContext _dbContext;
-        
-        private readonly IMapper _mapper;
+        public VotingRepository(VotingDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+        {
+        }
 
-            public VotingRepository(VotingDbContext dbContext, IMapper mapper) : base(dbContext)
+        public async Task<List<VotingDto>> GetAllVotingDtosAsync(string userId)
+        {
+            return await GetDbSet()
+                .Where(voting => voting.User.Id == userId)
+                .Include(voting => voting.Participants.Where(votingParticipant => votingParticipant.UserId == userId))
+                .ProjectTo<VotingDto>(_mapper.ConfigurationProvider).ToListAsync();
+        }
+
+        public async Task<Voting> Get(GetOptions options)
+        {
+            IQueryable<Voting> allVoting = GetDbSet();
+
+            if (options.IncludeParticipants)
             {
-                _dbContext = dbContext;
-                _mapper = mapper;
-            }
-            
-            public Task<List<GetAllVotingDto>> GetAllVotingDtosAsync()
-            {
-                return GetDbSet().ProjectTo<GetAllVotingDto>(_mapper.ConfigurationProvider).ToListAsync();
+                allVoting = allVoting.Include(voting => voting.Participants);
             }
 
-            public Task<GetVotingDto> GetVotingDtoAsync(int id)
+            if (options.IncludeVotingOptions)
             {
-                return GetDbSet().Where(voting => voting.Id == id).ProjectTo<GetVotingDto>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                allVoting = allVoting.Include(voting => voting.VotingOptions);
             }
-            
+
+            return await allVoting.FirstOrDefaultAsync(voting => voting.Id == options.Id);
+        }
+
+        public async Task<GetVotingDto> GetVotingDtoAsync(int id)
+        {
+            return await GetDto<GetVotingDto>(id);
+        }
+
+        public async Task<UpdateVotingDto> GetVotingForUpdateAsync(int id)
+        {
+            return await GetDto<UpdateVotingDto>(id);
+        }
+
+        public override async Task<ICollection<Voting>> GetAllAsync(string userId)
+        {
+            return await GetDbSet()
+                .Include(voting => voting.Participants)
+                .Include(voting => voting.Votes)
+                .Where(voting =>
+                    voting.User.Id == userId || voting.Participants.Any(participant => participant.UserId == userId))
+                .ToListAsync();
+        }
     }
 }

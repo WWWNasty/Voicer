@@ -1,15 +1,22 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using DataAccessLayer.Models.Entities;
+using DataAccessLayer.Models.Users;
 
 namespace DataAccessLayer.Models.Chats
 {
-    public class Message: Entity<int>
+    public class Message : IEntity<int>
     {
-        public string Text { get; set; }
+        public int Id { get; set; }
 
-        public DateTime Created { get; set; }
+        [Required] public string Text { get; set; }
 
-        public string User { get; set; }
+        [Required] public DateTime Created { get; set; } = DateTime.UtcNow;
 
+        [Required] public string UserId { get; set; }
+
+        public User User { get; set; }
+
+        [Required] public int ChatId { get; set; }
     }
 }

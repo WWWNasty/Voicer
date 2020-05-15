@@ -1,20 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using BusinessLogicLayer.Abstraction.Repositories;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands;
-using DataAccessLayer.Models.Entities;
 using Infrastructure.EntityFramework;
 using Infrastructure.EntityFramework.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApplication.Chat;
 
 namespace WebApplication
 {
@@ -30,15 +25,23 @@ namespace WebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
-            
-            services.AddDbContext<VotingDbContext>(builder => builder
-                .UseSqlite(Configuration.GetConnectionString("SQLite")));
+            services.AddControllersWithViews();
+            services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddRazorPages();
             services.AddScoped<IVotingRepository, VotingRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IVotingService, VotingService>();
-            services.AddAutoMapper(typeof(VotingProfile));
+            services.AddScoped<IVotingOptionRepository, VotingOptionRepository>();
+            services.AddScoped<IVoteRepository, VoteRepository>();
+            services.AddAutoMapper(typeof(VotingMappingProfile));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddDbContext<VotingDbContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("SQLite")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,20 +58,27 @@ namespace WebApplication
                 app.UseHsts();
             }
 
+            app.UseDefaultFiles();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                //https://voicer.com -> VotingController.Index()
+                //https://voicer.com/Home -> HomeController.Index()
+                //https://voicer.com/Home/Add -> HomeController.Add()
+                //https://voicer.com/Voting/Get -> VotingController.Get()
+                //https://voicer.com/Voting/Get/1 -> VotingController.Get(1)
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Voting}/{action=Index}/{id?}");
+
+                endpoints.MapRazorPages();
+                endpoints.MapHub<ChatHub>("/chat");
             });
-            
         }
     }
 }

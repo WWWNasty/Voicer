@@ -2,11 +2,14 @@
 using DataAccessLayer.Models.Chats;
 using DataAccessLayer.Models.Users;
 using DataAccessLayer.Models.Votes;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Infrastructure.EntityFramework
 { 
-    public class VotingDbContext : DbContext
+    public class VotingDbContext :  IdentityDbContext<User>
     {
         
 
@@ -18,7 +21,7 @@ namespace Infrastructure.EntityFramework
         
         public DbSet<Voting> Voting { get; set;}
         
-        public DbSet<VotingOption> VotingOption { get; set; }
+        public DbSet<VotingOption> VotingOptions { get; set; }
 
         public DbSet<Vote> Votes { get; set; }
         
@@ -40,6 +43,16 @@ namespace Infrastructure.EntityFramework
                 .HasOne(userVoting => userVoting.User)
                 .WithMany(user => user.UserVoting)
                 .HasForeignKey(userVoting => userVoting.UserId);
+            
+            modelBuilder.Entity<Voting>()
+                .HasMany(voting => voting.VotingOptions)
+                .WithOne(option => option.Voting)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Voting>()
+                .HasMany(voting => voting.Votes)
+                .WithOne(option => option.Voting)
+                .OnDelete(DeleteBehavior.Cascade);
+
 
 
         }

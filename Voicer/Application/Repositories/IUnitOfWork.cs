@@ -6,6 +6,16 @@ namespace BusinessLogicLayer.Abstraction.Repositories
     {
         IVotingRepository VotingRepository { get; }
 
+        IUserRepository UserRepository { get; }
+
+        IVotingOptionRepository VotingOptionRepository { get; }
+
+        IVoteRepository VoteRepository { get; }
+
+        IChatRepository ChatRepository { get; }
+
+        IMessageRepository MessageRepository { get; }
+
         Task SaveChangesAsync();
     }
 }

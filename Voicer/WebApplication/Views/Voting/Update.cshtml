@@ -6,8 +6,8 @@
 }
 
 <h1>Edit voting</h1>
-<form>
-    <partial name="_Voting" />
-    
-    <button type="button" class="btn btn-success">Save</button>
+<form asp-action="Update" method="post" asp-route-id="@Model.Id">
+    <partial name="_Voting"/>
+    <input type="hidden" asp-for="Id"/>
 </form>
+<a asp-action="Get" asp-route-id="@Model.Id" class="btn btn-light">Back</a>
