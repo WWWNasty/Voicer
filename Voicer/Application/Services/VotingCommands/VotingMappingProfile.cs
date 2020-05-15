@@ -1,5 +1,6 @@
 using AutoMapper;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos;
+using DataAccessLayer.Models.Chats;
 using DataAccessLayer.Models.Users;
 using DataAccessLayer.Models.Votes;
 
@@ -20,6 +21,9 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
             CreateMap<Voting, DeleteVotingDto>();
             CreateMap<UpdateVotingDto, Voting>().ReverseMap();
             CreateMap<VotingOptionDto, VotingOption>().ReverseMap();
+            CreateMap<Message, MessageDto>();
+            CreateMap<CreateMessageDto, Message>()
+                .ForMember(message => message.User, opt => opt.Ignore());
         }
     }
 }

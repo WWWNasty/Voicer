@@ -3,8 +3,7 @@ using DataAccessLayer.Models.Votes;
 
 namespace BusinessLogicLayer.Abstraction.Repositories
 {
-    public interface IVotingOptionRepository: IBaseRepository<VotingOption, int>
+    public interface IVotingOptionRepository : IBaseRepository<VotingOption, int>
     {
-        
     }
 }

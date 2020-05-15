@@ -27,6 +27,7 @@ namespace WebApplication.Controllers
             return View(await _votingService.GetAllVotingAsync(User.GetUserId()));
         }
 
+        [Authorize]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             GetVotingDto getVotingDto = await _votingService.GetVotingAsync(id);
@@ -52,7 +53,7 @@ namespace WebApplication.Controllers
         [Authorize]
         public IActionResult Add()
         {
-            return View();
+            return View(new CreateVotingDto());
         }
 
         [Authorize]
@@ -86,9 +87,20 @@ namespace WebApplication.Controllers
             return RedirectToAction("Get", new {id = dto.VotingId});
         }
 
+        [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id)
         {
             return View(await _votingService.GetVotingForUpdateAsync(id));
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Update([FromForm] UpdateVotingDto dto)
+        {
+            await _votingService.UpdateAsync(dto);
+
+            return RedirectToAction("Get", new {id = dto.Id});
         }
 
         [Authorize]
@@ -102,14 +114,6 @@ namespace WebApplication.Controllers
             await _votingService.MakeVoteAsync(makeVoteDto);
 
             return Redirect(Request.Headers["Referer"].ToString());
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Update([FromForm] UpdateVotingDto dto)
-        {
-            await _votingService.UpdateAsync(dto);
-
-            return RedirectToAction("Get", new {id = dto.Id});
         }
 
 

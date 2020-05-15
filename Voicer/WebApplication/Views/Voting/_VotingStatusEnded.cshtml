@@ -1,6 +1,20 @@
+@using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos
 @model BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos.GetVotingDto;
+пройтиссь по всем воутин оптионам и в славаре достать по ключу голосаколво
 
-<div class="progress">
-  <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
-</div>
+@foreach (VotingOptionDto option in Model.VotingOptions)
+{
+    <p>@option.Name</p>
+    <div class="progress">
+        @{
+            var votingOptionCount = Model.VoteCountByVotingOptionDto.VotingOptionCount;
+            var count = votingOptionCount.GetValueOrDefault(option.Id);
+            var percent = votingOptionCount.Values.Sum() * 100.0 / count;
+        }
+        <div class="progress-bar bg-success" role="progressbar" style="width: @percent%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
 
+        </div>
+
+        @count
+    </div>
+}

@@ -26,21 +26,31 @@ namespace Infrastructure.EntityFramework.Repositories
                 .ProjectTo<VotingDto>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
+        public async Task<Voting> Get(GetOptions options)
+        {
+            IQueryable<Voting> allVoting = GetDbSet();
+
+            if (options.IncludeParticipants)
+            {
+                allVoting = allVoting.Include(voting => voting.Participants);
+            }
+
+            if (options.IncludeVotingOptions)
+            {
+                allVoting = allVoting.Include(voting => voting.VotingOptions);
+            }
+
+            return await allVoting.FirstOrDefaultAsync(voting => voting.Id == options.Id);
+        }
+
         public async Task<GetVotingDto> GetVotingDtoAsync(int id)
         {
             return await GetDto<GetVotingDto>(id);
         }
 
-        public async Task<Voting> GetVotingDtoWithParticipantsAsync(int id)
+        public async Task<UpdateVotingDto> GetVotingForUpdateAsync(int id)
         {
-            return await GetDbSet()
-                .Include(voting => voting.Participants)
-                .FirstOrDefaultAsync(voting => voting.Id == id);
-        }
-
-        public Task<UpdateVotingDto> GetVotingForUpdateAsync(int id)
-        {
-            return GetDto<UpdateVotingDto>(id);
+            return await GetDto<UpdateVotingDto>(id);
         }
 
         public override async Task<ICollection<Voting>> GetAllAsync(string userId)

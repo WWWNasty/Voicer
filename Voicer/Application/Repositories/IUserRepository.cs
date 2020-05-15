@@ -1,10 +1,11 @@
+using System.Threading.Tasks;
 using BusinessLogicLayer.Abstraction.Repositories.Base;
 using DataAccessLayer.Models.Users;
 
 namespace BusinessLogicLayer.Abstraction.Repositories
 {
-    public interface IUserRepository: IBaseRepository<User, string>
+    public interface IUserRepository : IBaseRepository<User, string>
     {
-       User FindUserByEmail(string search);
+        Task<User> FindUserByEmailAsync(string search);
     }
 }

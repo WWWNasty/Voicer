@@ -1,21 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using BusinessLogicLayer.Abstraction.Repositories;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands;
-using DataAccessLayer.Models.Entities;
 using Infrastructure.EntityFramework;
 using Infrastructure.EntityFramework.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApplication.Chat;
 
 namespace WebApplication
 {
@@ -31,9 +25,13 @@ namespace WebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
+            services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddRazorPages();
             services.AddScoped<IVotingRepository, VotingRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -44,7 +42,6 @@ namespace WebApplication
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddDbContext<VotingDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("SQLite")));
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,11 +58,10 @@ namespace WebApplication
                 app.UseHsts();
             }
 
+            app.UseDefaultFiles();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -81,8 +77,8 @@ namespace WebApplication
                     pattern: "{controller=Voting}/{action=Index}/{id?}");
 
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ChatHub>("/chat");
             });
-            
         }
     }
 }

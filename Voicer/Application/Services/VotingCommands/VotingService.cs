@@ -6,6 +6,7 @@ using AutoMapper;
 using BusinessLogicLayer.Abstraction.Extensions;
 using BusinessLogicLayer.Abstraction.Repositories;
 using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos;
+using DataAccessLayer.Models.Chats;
 using DataAccessLayer.Models.Users;
 using DataAccessLayer.Models.Votes;
 using DataAccessLayer.Models.Votes.Enums;
@@ -67,6 +68,8 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
 
             voting.UserId = user.GetUserId();
 
+            voting.Chat = new Chat();
+
             _unitOfWork.VotingRepository.Create(voting);
 
             await _unitOfWork.SaveChangesAsync();
@@ -76,20 +79,32 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
 
         public async Task UpdateAsync(UpdateVotingDto dto)
         {
-            var voting = await _unitOfWork.VotingRepository.GetAsync(dto.Id);
+            var voting = await _unitOfWork.VotingRepository.Get(new GetOptions
+            {
+                Id = dto.Id,
+                IncludeVotingOptions = true
+            });
+            ;
 
-            _mapper.Map(dto, voting);
+            if (voting.GetVotingStatus() == VotingStatus.Upcoming)
+            {
+                _mapper.Map(dto, voting);
 
-            _unitOfWork.VotingRepository.Update(voting);
+                _unitOfWork.VotingRepository.Update(voting);
 
-            await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
+            }
         }
 
         public async Task InviteAsync(InviteUserDto dto)
         {
             //достать сущьность головонния из репозитория потом добавить в нее участников голосования пользователя который достанем из репозитория пользователей сохраним изменения
-            Voting voting = await _unitOfWork.VotingRepository.GetVotingDtoWithParticipantsAsync(dto.VotingId);
-            User findUserByEmail = _unitOfWork.UserRepository.FindUserByEmail(dto.Email);
+            Voting voting = await _unitOfWork.VotingRepository.Get(new GetOptions
+            {
+                Id = dto.VotingId,
+                IncludeParticipants = true
+            });
+            User findUserByEmail = await _unitOfWork.UserRepository.FindUserByEmailAsync(dto.Email);
             if (voting != null && findUserByEmail != null &&
                 voting.Participants.All(user => user.UserId != findUserByEmail.Id))
             {
@@ -120,6 +135,16 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
             }
         }
 
-        public Task<GetVotingDto> GetVotingAsync(int id) => _unitOfWork.VotingRepository.GetVotingDtoAsync(id);
+        public async Task<GetVotingDto> GetVotingAsync(int id)
+        {
+            var votingDto = await _unitOfWork.VotingRepository.GetVotingDtoAsync(id);
+            if (votingDto == null)
+            {
+                return null;
+            }
+
+            votingDto.VoteCountByVotingOptionDto = await _unitOfWork.VoteRepository.GetCountVoteAsync(id);
+            return votingDto;
+        }
     }
 }
