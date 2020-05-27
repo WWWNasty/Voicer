@@ -83,8 +83,13 @@ namespace WebApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Invite([FromForm] InviteUserDto dto)
         {
-            await _votingService.InviteAsync(dto);
-            return RedirectToAction("Get", new {id = dto.VotingId});
+            if (ModelState.IsValid)
+            {
+                await _votingService.InviteAsync(dto);
+                return RedirectToAction("Get", new {id = dto.VotingId});
+            }
+
+            return View(dto);
         }
 
         [Authorize]
@@ -98,9 +103,14 @@ namespace WebApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Update([FromForm] UpdateVotingDto dto)
         {
-            await _votingService.UpdateAsync(dto);
+            if (ModelState.IsValid)
+            {
+                await _votingService.UpdateAsync(dto);
 
-            return RedirectToAction("Get", new {id = dto.Id});
+                return RedirectToAction("Get", new {id = dto.Id});
+            }
+
+            return View(dto);
         }
 
         [Authorize]

@@ -5,9 +5,9 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos
 {
     public class MessageDto
     {
-        [Required] public string Text { get; set; }
+        [Required] [MaxLength(600)] public string Text { get; set; }
 
-        [Required] public DateTime Created { get; set; }
+        public DateTime Created { get; set; }
 
         [Required] public string UserId { get; set; }
 

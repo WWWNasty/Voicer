@@ -25,5 +25,7 @@ namespace BusinessLogicLayer.Abstraction.Repositories
         public bool IncludeVotingOptions { get; set; }
 
         public bool IncludeVotes { get; set; }
+
+        public bool IncludeUser { get; set; }
     }
 }

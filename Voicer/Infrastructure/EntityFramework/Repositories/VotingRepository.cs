@@ -28,6 +28,13 @@ namespace Infrastructure.EntityFramework.Repositories
 
         public async Task<Voting> Get(GetOptions options)
         {
+            var allVoting = GetVotingQuery(options);
+
+            return await allVoting.FirstOrDefaultAsync(voting => voting.Id == options.Id);
+        }
+
+        private IQueryable<Voting> GetVotingQuery(GetOptions options)
+        {
             IQueryable<Voting> allVoting = GetDbSet();
 
             if (options.IncludeParticipants)
@@ -40,12 +47,26 @@ namespace Infrastructure.EntityFramework.Repositories
                 allVoting = allVoting.Include(voting => voting.VotingOptions);
             }
 
-            return await allVoting.FirstOrDefaultAsync(voting => voting.Id == options.Id);
+            if (options.IncludeUser)
+            {
+                allVoting = allVoting.Include(voting => voting.User);
+            }
+
+            return allVoting;
         }
 
         public async Task<GetVotingDto> GetVotingDtoAsync(int id)
         {
-            return await GetDto<GetVotingDto>(id);
+            var allVoting = GetVotingQuery(new GetOptions
+
+            {
+                Id = id,
+                IncludeParticipants = true,
+                IncludeUser = true
+            });
+
+            return await allVoting.ProjectTo<GetVotingDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(opt => opt.Id == id);
         }
 
         public async Task<UpdateVotingDto> GetVotingForUpdateAsync(int id)

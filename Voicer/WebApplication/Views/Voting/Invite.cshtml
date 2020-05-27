@@ -1,4 +1,3 @@
-@using DataAccessLayer.Models.Votes.Enums
 @model BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos.InviteUserDto;
 
 @{
@@ -9,14 +8,16 @@
 <h1>Invite user</h1>
 
 <form asp-action="Invite" method="post">
-    
+
     <div class="form-group">
         <label asp-for="Email">User Email</label>
         <input asp-for="Email" class="form-control" placeholder="Email"/>
-    </div> 
+        <span asp-validation-for="Email" class="text-danger"></span>
+
+    </div>
     <input type="hidden" asp-for="VotingId"/>
     <br>
-  
-    <input type="submit"  value="Invite" class="btn btn-success" />
+
+    <input type="submit" value="Invite" class="btn btn-success"/>
 
 </form>
