@@ -1,25 +1,25 @@
 @using BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos
 @model ICollection<BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos.VotingDto>
 
-<table class="table table-inverse">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>StartDate</th>
-        <th>EndDate</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (VotingDto voting in Model)
-    {
-        <tr>
-            <th scope="row">1</th>
-            <td><a asp-action="Get" asp-route-id="@voting.Id">@voting.Name</a></td>
-            <td>@voting.StartDate</td>
-            <td>@voting.EndDate</td>
-        </tr>
-    }
-    </tbody>
-</table>
+
+
+@foreach (VotingDto voting in Model)
+{
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <a asp-action="Get" asp-route-id="@voting.Id">@voting.Name</a>
+                <div class="col-sm">
+                    <p>@voting.StartDate</p>
+                    <p>@voting.EndDate</p>
+
+                </div>
+                <div class="col-sm">
+                    <button type="button" class="btn btn-outline-danger">Delete</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+  
