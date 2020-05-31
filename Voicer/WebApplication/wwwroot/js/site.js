@@ -100,9 +100,9 @@ $(document).ready(async () => {
         // messageTemplate.html(html);
         //
         // $message.parent().append(messageTemplate);
-
+debugger;
         let elem = document.createElement("p");
-        elem.appendChild(document.createTextNode(`${sendMessageDto.user.email}: "${sendMessageDto.text}"  ${sendMessageDto.created}`));
+        elem.appendChild(document.createTextNode(`${sendMessageDto.user.userName}: "${sendMessageDto.text}"  ${sendMessageDto.created}`));
         let firstElem = document.getElementById("chatroom").firstChild;
         document.getElementById("chatroom").append(elem);
     }

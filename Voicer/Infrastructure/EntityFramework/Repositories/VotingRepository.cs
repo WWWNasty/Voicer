@@ -26,7 +26,7 @@ namespace Infrastructure.EntityFramework.Repositories
                 .ProjectTo<VotingDto>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
-        public async Task<Voting> Get(GetOptions options)
+        public async Task<Voting> GetAsync(GetOptions options)
         {
             var allVoting = GetVotingQuery(options);
 

@@ -14,7 +14,7 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands.Dtos
 
         [Required(ErrorMessage = "Не указан пользователь!")]
         //[MaxLength(200)]
-        [StringLength(200, MinimumLength = 4, ErrorMessage = "Длина строки должна быть от 4 до 200 символов")]
-        public string Email { get; set; }
+        [StringLength(200, MinimumLength = 1, ErrorMessage = "Длина строки должна быть от 1 до 200 символов")]
+        public string SerchUser { get; set; }
     }
 }

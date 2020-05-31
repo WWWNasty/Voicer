@@ -27,7 +27,7 @@ namespace WebApplication.Chat
             var sendMessageDto = await _chat.SendMessageAsync(new CreateMessageDto()
             {
                 ChatId = chatId,
-                Email = userName,
+                UserName = userName,
                 UserId = userId,
                 Text = text
             });

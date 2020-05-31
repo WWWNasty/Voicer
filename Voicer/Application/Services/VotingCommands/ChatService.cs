@@ -31,7 +31,7 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
 
             messageDto.User = new UserDto()
             {
-                Email = createMessageDto.Email
+                UserName = createMessageDto.UserName
             };
             return messageDto;
         }
