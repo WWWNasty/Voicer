@@ -20,17 +20,22 @@ namespace WebApplication.Chat
 
         public async Task Send(string text, int chatId)
         {
+            // if (ModelState.IsValid)
+            // {
             var userId = Context.User.GetUserId();
             var userName = Context.User.Identity.Name;
             var sendMessageDto = await _chat.SendMessageAsync(new CreateMessageDto()
             {
                 ChatId = chatId,
-                Email = userName,
+                UserName = userName,
                 UserId = userId,
                 Text = text
             });
 
             await Clients.Group(chatId.ToString()).SendAsync("Send", sendMessageDto);
+
+            // }
+            //return View(dto);
         }
 
         public async Task<List<MessageDto>> GetAllMessages(GetMessageQueryDto dto)

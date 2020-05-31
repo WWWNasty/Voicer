@@ -3,7 +3,7 @@
     ViewData["Title"] = "Voting Page";
 }
 <div class="row">
-    
+
     <div class="col-sm">
         <h1>List voting</h1>
     </div>
@@ -13,67 +13,22 @@
 </div>
 <div class="row">
     <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <button class="btn btn-outline-secondary" type="button" id="button-addon1">Search</button>
-      </div>
-      <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+        <div class="input-group-prepend">
+            <button class="btn btn-outline-secondary" type="button" id="button-addon1">Search</button>
+        </div>
+        <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
     </div>
 </div>
 
 <div>
-    
-    <div class="row">
-        <div class="col-sm">
-            <h7>Upcoming voting</h7>
-        </div>
-        <partial name="_AllVoting" model="@Model.UpcomingVoting"/>
-    </div>
-    <br>
-    <br>
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-sm">
-                    This is some text within a card body.
-                </div>
-                <div class="col-sm">
-                    <button type="button" class="btn btn-outline-danger">Delete</button>
-                </div>
-                
-            </div>
-        </div>
-    </div>
+    <h7>Upcoming voting</h7>
+    <partial name="_AllVoting" model="@Model.UpcomingVoting"/>
 </div>
- <br>
-<br>
-<br>
 <div>
     <h7>Active voting</h7>
-    <br>
-    <br>
     <partial name="_AllVoting" model="@Model.ActiveVoting"/>
 </div>
- <br>
-<br>
-<br>
 <div>
     <h7>Closed voting</h7>
-    <br>
-    <br>
-    
     <partial name="_AllVoting" model="@Model.ClosedVoting"/>
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-sm">
-                    This is some text within a card body.
-                </div>
-                <div class="col-sm">
-                    <button type="button" class="btn btn-outline-danger">Delete</button>
-                </div>
-                            
-            </div>
-            
-        </div>
-    </div>
 </div>

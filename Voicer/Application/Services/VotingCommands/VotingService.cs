@@ -79,7 +79,7 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
 
         public async Task UpdateAsync(UpdateVotingDto dto)
         {
-            var voting = await _unitOfWork.VotingRepository.Get(new GetOptions
+            var voting = await _unitOfWork.VotingRepository.GetAsync(new GetOptions
             {
                 Id = dto.Id,
                 IncludeVotingOptions = true
@@ -99,18 +99,18 @@ namespace BusinessLogicLayer.Abstraction.Services.VotingCommands
         public async Task InviteAsync(InviteUserDto dto)
         {
             //достать сущьность головонния из репозитория потом добавить в нее участников голосования пользователя который достанем из репозитория пользователей сохраним изменения
-            Voting voting = await _unitOfWork.VotingRepository.Get(new GetOptions
+            Voting voting = await _unitOfWork.VotingRepository.GetAsync(new GetOptions
             {
                 Id = dto.VotingId,
                 IncludeParticipants = true
             });
-            User findUserByEmail = await _unitOfWork.UserRepository.FindUserByEmailAsync(dto.Email);
-            if (voting != null && findUserByEmail != null &&
-                voting.Participants.All(user => user.UserId != findUserByEmail.Id))
+            User findUser = await _unitOfWork.UserRepository.FindUser(dto.SerchUser);
+            if (voting != null && findUser != null &&
+                voting.Participants.All(user => user.UserId != findUser.Id))
             {
                 voting.Participants.Add(new UserVoting
                 {
-                    User = findUserByEmail,
+                    User = findUser,
                     Voting = voting
                 });
                 await _unitOfWork.SaveChangesAsync();

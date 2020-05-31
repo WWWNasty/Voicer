@@ -232,3 +232,6 @@ _Pvt_Extensions
 
 # Idea configuration files
 .idea/
+
+#program db
+WebApplication/mydb.db

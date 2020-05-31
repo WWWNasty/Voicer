@@ -81,9 +81,6 @@ namespace Infrastructure.Migrations
                 b.Property<DateTimeOffset?>("LockoutEnd")
                     .HasColumnType("TEXT");
 
-                b.Property<string>("Name")
-                    .HasColumnType("TEXT");
-
                 b.Property<string>("NormalizedEmail")
                     .HasColumnType("TEXT")
                     .HasMaxLength(256);
@@ -108,10 +105,13 @@ namespace Infrastructure.Migrations
                     .HasColumnType("INTEGER");
 
                 b.Property<string>("UserName")
+                    .IsRequired()
                     .HasColumnType("TEXT")
                     .HasMaxLength(256);
 
                 b.HasKey("Id");
+
+                b.HasAlternateKey("UserName");
 
                 b.HasIndex("NormalizedEmail")
                     .HasName("EmailIndex");

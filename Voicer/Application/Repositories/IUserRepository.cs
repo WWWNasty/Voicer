@@ -6,6 +6,6 @@ namespace BusinessLogicLayer.Abstraction.Repositories
 {
     public interface IUserRepository : IBaseRepository<User, string>
     {
-        Task<User> FindUserByEmailAsync(string search);
+        Task<User> FindUser(string paramOfUserSerch);
     }
 }

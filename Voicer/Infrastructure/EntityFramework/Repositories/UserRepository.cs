@@ -13,9 +13,10 @@ namespace Infrastructure.EntityFramework.Repositories
         {
         }
 
-        public async Task<User> FindUserByEmailAsync(string email)
+        public async Task<User> FindUser(string paramOfUserSerch)
         {
-            return await GetDbSet().FirstOrDefaultAsync(user => user.Email == email);
+            return await GetDbSet()
+                .FirstOrDefaultAsync(user => user.UserName == paramOfUserSerch || user.Email == paramOfUserSerch);
         }
     }
 }
